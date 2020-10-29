@@ -2,7 +2,7 @@
 <Configuration>
     <Properties>
         <Property name="log-path">./logs</Property>
-        <Property name="file-name">messaging-service.log</Property>
+        <Property name="file-name">demolog.log</Property>
         <!--
             %d - date format
             %-8.8p - Log level, 8 columns width with 8 chars
@@ -22,6 +22,16 @@
     </Properties>
 
     <Appenders>
+        <appender name="CLOUD" class="com.google.cloud.logging.logback.LoggingAppender">
+            <!-- Optional : filter logs at or above a level -->
+            <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+                <level>INFO</level>
+            </filter>
+            <log>demolog.log</log> <!-- Optional : default java.log -->
+            <resourceType>gae_app</resourceType> <!-- Optional : default: auto-detected, fallback: global -->
+            <flushLevel>INFO</flushLevel> <!-- Optional : default ERROR -->
+        </appender>
+
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="${pattern}" />
         </Console>
@@ -47,13 +57,12 @@
         <Root level="WARN" additivity="false">
             <AppenderRef ref="Console" />
             <AppenderRef ref="RollingFile" />
+            <AppenderRef ref="CLOUD" />
         </Root>
-        <Logger name="com.tw.td" level="INFO" additivity="false">
+        <Logger name="com.demo" level="INFO" additivity="false">
             <AppenderRef ref="Console"/>
             <AppenderRef ref="RollingFile"/>
-        </Logger>
-        <Logger name="org.flywaydb" level="DEBUG" additivity="false">
-            <AppenderRef ref="Console"/>
+            <AppenderRef ref="CLOUD"/>
         </Logger>
     </Loggers>
 

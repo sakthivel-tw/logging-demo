@@ -1,0 +1,3 @@
+service: KAFKA_CONNECT_MONITOR
+runtime: custom
+env: flex

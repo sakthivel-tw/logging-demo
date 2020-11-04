@@ -1,29 +1,41 @@
 <configuration>
-    <appender name="CLOUD" class="com.google.cloud.logging.logback.LoggingAppender">
-        <!-- Optional : filter logs at or above a level -->
-        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>DEBUG</level>
-        </filter>
-        <log>application.log</log> <!-- Optional : default java.log -->
-        <resourceType>gae_app</resourceType> <!-- Optional : default: auto-detected, fallback: global -->
-        <enhancer>com.demo.ExampleEnhancer</enhancer>
-        <flushLevel>WARN</flushLevel> <!-- Optional : default ERROR -->
+<!--    <appender name="CLOUD" class="com.google.cloud.logging.logback.LoggingAppender">-->
+<!--        &lt;!&ndash; Optional : filter logs at or above a level &ndash;&gt;-->
+<!--        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">-->
+<!--            <level>INFO</level>-->
+<!--        </filter>-->
+<!--        <log>application.log</log> &lt;!&ndash; Optional : default java.log &ndash;&gt;-->
+<!--        <resourceType>gae_app</resourceType> &lt;!&ndash; Optional : default: auto-detected, fallback: global &ndash;&gt;-->
+<!--&lt;!&ndash;        <enhancer>com.demo.ExampleEnhancer</enhancer>&ndash;&gt;-->
+<!--        <flushLevel>WARN</flushLevel> &lt;!&ndash; Optional : default ERROR &ndash;&gt;-->
+<!--&lt;!&ndash;        <encoder>&ndash;&gt;-->
+<!--&lt;!&ndash;            <pattern>%d | [%X{X-B3-TraceId},%X{X-B3-SpanId},%X{X-B3-ParentSpanId},%X{X-Span-Export}] | %-5level [%thread] %logger{0}: %msg%n</pattern>&ndash;&gt;-->
+<!--&lt;!&ndash;            <outputPatternAsHeader>true</outputPatternAsHeader>&ndash;&gt;-->
+<!--&lt;!&ndash;        </encoder>&ndash;&gt;-->
+<!--    </appender>-->
+<!--    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">-->
+<!--        &lt;!&ndash;        <layout class="ch.qos.logback.classic.PatternLayout">&ndash;&gt;-->
+<!--        &lt;!&ndash;            <Pattern>&ndash;&gt;-->
 <!--        <encoder>-->
-<!--            <pattern>%d | [%X{X-B3-TraceId},%X{X-B3-SpanId},%X{X-B3-ParentSpanId},%X{X-Span-Export}] | %-5level [%thread] %logger{0}: %msg%n</pattern>-->
-<!--            <outputPatternAsHeader>true</outputPatternAsHeader>-->
+<!--            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSSZ} | [%X{X-B3-TraceId},%X{X-B3-SpanId},%X{X-B3-ParentSpanId},%X{X-Span-Export}] | %-8.8p| [%t] | %c{3}-->
+<!--                | %m%n-->
+<!--            </Pattern>-->
 <!--        </encoder>-->
-    </appender>
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <!--        <layout class="ch.qos.logback.classic.PatternLayout">-->
-        <!--            <Pattern>-->
-        <encoder>
-            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSSZ} | [%X{X-B3-TraceId},%X{X-B3-SpanId},%X{X-B3-ParentSpanId},%X{X-Span-Export}] | %-8.8p| [%t] | %c{3}
-                | %m%n
-            </Pattern>
+<!--    </appender>-->
+<!--    <root level="debug">-->
+<!--        <appender-ref ref="CLOUD" />-->
+<!--    </root>-->
+
+    <property name="projectId" value="${projectId:-${GOOGLE_CLOUD_PROJECT}}"/>
+    <appender name="CONSOLE_JSON" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <layout class="org.springframework.cloud.gcp.logging.StackdriverJsonLayout">
+                <projectId>${projectId}</projectId>
+            </layout>
         </encoder>
     </appender>
+
     <root level="debug">
-        <appender-ref ref="CLOUD" />
-        <appender-ref ref="STDOUT" />
+        <appender-ref ref="CONSOLE_JSON" />
     </root>
 </configuration>
